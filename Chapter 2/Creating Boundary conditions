@@ -1,0 +1,64 @@
+from sklearn.datasets import load_iris
+import sklearn as sp
+
+data = load_iris()
+
+feature_data = data['data']
+
+feature_names = data['feature_names']
+
+y_value = data['target']
+
+plant_name = data['target_names']
+
+# Looking at the last graph in the visualization section i.e. subplot(2,3,6)
+
+# the realization is that petals can easily define the Iris Setosa without the 
+    # use of any classification techniques
+    
+setosa_data = feature_data[y_value==0]
+
+# Since petal features are indexed at 2,3
+
+max_petal_length = setosa_data[:,2].max()
+min_petal_length = setosa_data[:,2].min()
+
+max_petal_width = setosa_data[:,3].max()
+min_petal_width = setosa_data[:,3].min()
+
+# So, based on the given data these are the boudary conditions
+
+# For me, with the data that i have i get petal length [1, 1.9]
+# and petal width can lie [0.1, 0.6]
+
+# Automating the same for all the 3 type of classifiers
+
+len(feature_data)
+
+def boundary(x,y,number_of_classifiers):
+    import numpy as np
+    upper_bounds = np.zeros((x.shape[1],number_of_classifiers))
+    accuracy_matrix = np.zeros((x.shape[1],number_of_classifiers))
+    for i in range(number_of_classifiers):
+        x_temp = x[y==i].copy()
+        y_temp = y[y==i].copy()
+        
+        for features in range(x.shape[1]):
+            accuracy=0
+            dummy_value = np.zeros((len(x_temp),1))
+            for rows in range(len(x_temp)):
+                for iter in range(len(x_temp)):
+                    if x_temp[iter,features]>=x_temp[rows,features]:
+                        dummy_value[iter,0]=i
+                    else:
+                        dummy_value[iter,0]=number_of_classifiers+1
+                    if y_temp[iter]==dummy_value[iter]:
+                        accuracy+=1
+                accuracy_cal = accuracy*100/len(y_temp)
+                if accuracy_cal>accuracy:
+                    accuracy = accuracy_cal
+                    upper_bounds[features,i]=x_temp[rows,features]
+                    accuracy_matrix[features,i]=accuracy_cal
+    return accuracy_matrix, upper_bounds            
+
+accuracy, bounds = boundary(feature_data,y_value,3)
