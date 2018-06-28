@@ -1,0 +1,33 @@
+from sklearn.datasets import load_iris
+import numpy as np
+
+data = load_iris()
+
+features = data['data']
+feature_name = data['feature_names']
+target = data['target']
+
+# Creating multiple plots
+
+import matplotlib.pyplot as plt
+plt_no=1
+plt.figure(figsize=(15,7))
+for i in range(4):
+    for j in range(i+1,features.shape[1]): 
+        for t in range(3):
+            if t == 0:
+                marker = '>'
+                colour = 'r'
+            elif t == 1:
+                marker = 'X'
+                colour = 'b'
+            elif t == 2:
+                marker = 'o'
+                colour ='g'
+            plt.subplot(2,3,plt_no)
+            plt.scatter(features[target==t,i],features[target==t,j], marker=marker,c=colour)
+            plt.xlabel(feature_name[i])
+            plt.ylabel(feature_name[j])
+        plt_no+=1
+        
+# From the graph one can understand that petal length is one of the key factor in distinguishing one of the classifications i.e. t==0 in this case
